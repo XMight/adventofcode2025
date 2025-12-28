@@ -1,6 +1,8 @@
 package com.abusmac.advent2025;
 
 import com.abusmac.io.InputOutputUtils;
+import com.abusmac.math.MathUtils;
+import com.abusmac.types.Triplet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,9 +16,15 @@ public class Day2 implements Callable<Long> {
     private static final Logger LOGGER = LoggerFactory.getLogger(Day2.class);
 
     private final String input;
+    private final boolean enableLogs;
+
+    public Day2(String input, boolean enableLogs) {
+        this.input = input;
+        this.enableLogs = enableLogs;
+    }
 
     public Day2(String input) {
-        this.input = input;
+        this(input, false);
     }
 
     @Override
@@ -29,7 +37,9 @@ public class Day2 implements Callable<Long> {
             long result = sumInvalidIDs(idRanges[i], resultsMap);
 
             if (result == 0L) {
-                LOGGER.info(String.format("Range has no invalid IDs: %s", idRanges[i]));
+                if(enableLogs) {
+                    LOGGER.info(String.format("Range has no invalid IDs: %s", idRanges[i]));
+                }
             }
 
             sum += result;
@@ -53,7 +63,9 @@ public class Day2 implements Callable<Long> {
             throw new IllegalArgumentException("Invalid ID range " + idRange);
         }
 
-        LOGGER.info("Processing range " + idRange);
+        if(enableLogs) {
+            LOGGER.info("Processing range " + idRange);
+        }
 
         int startNumberLength = idStart.length();
 
@@ -113,7 +125,9 @@ public class Day2 implements Callable<Long> {
             if (i >= sRight) {
                 long newInvalidId = Long.parseLong(i + String.valueOf(i));
 
-                LOGGER.info("New invalid id " + newInvalidId);
+                if(enableLogs) {
+                    LOGGER.info("New invalid id " + newInvalidId);
+                }
 
                 sum += newInvalidId;
                 results.add(newInvalidId);
@@ -125,7 +139,9 @@ public class Day2 implements Callable<Long> {
             for (; i <= eLeft - 1; i++) {
                 long newInvalidId = Long.parseLong(i + String.valueOf(i));
 
-                LOGGER.info("New invalid id " + newInvalidId);
+                if(enableLogs) {
+                    LOGGER.info("New invalid id " + newInvalidId);
+                }
 
                 sum += newInvalidId;
                 results.add(newInvalidId);
@@ -135,7 +151,10 @@ public class Day2 implements Callable<Long> {
         if(sLeft != eLeft) {
             for (; i <= eRight && i <= eLeft; i++) {
                 long newInvalidId = Long.parseLong(i + String.valueOf(i));
-                LOGGER.info("New invalid id " + newInvalidId);
+                if(enableLogs) {
+                    LOGGER.info("New invalid id " + newInvalidId);
+                }
+
                 sum += newInvalidId;
                 results.add(newInvalidId);
             }
@@ -143,7 +162,9 @@ public class Day2 implements Callable<Long> {
             if (i <= eRight && i >= sRight) {
                 long newInvalidId = Long.parseLong(i + String.valueOf(i));
 
-                LOGGER.info("New invalid id " + newInvalidId);
+                if(enableLogs) {
+                    LOGGER.info("New invalid id " + newInvalidId);
+                }
 
                 sum += newInvalidId;
                 results.add(newInvalidId);
@@ -156,9 +177,28 @@ public class Day2 implements Callable<Long> {
     public static void main(String[] args) throws Exception {
         String fileData = InputOutputUtils.readResourceFileData("day2/day2inputstripped.txt");
 
-        Day2 day2 = new Day2(fileData);
-        Long result = day2.call();
+        LOGGER.info("Executing Day2 with string data");
+        runDay2(fileData, 100);
+    }
 
-        LOGGER.info("Result of Day2 is: {}", result);
+    static void runDay2(String input, int samplesCount) throws Exception {
+        List<Long> executionDurations = new ArrayList<>();
+
+        for(int i = 0; i < samplesCount; i++) {
+            executionDurations.add(runWithProfiling(new Day2(input)));
+        }
+
+        Triplet<String, String, String> stats = MathUtils.calculateStats(executionDurations);
+        LOGGER.info("Min: {}; Max: {}; Median: {}", stats.f, stats.s, stats.t);
+    }
+
+    static long runWithProfiling(Callable<? extends Number> callable) throws Exception {
+        long before = System.nanoTime();
+
+        Number result = callable.call();
+
+        long after = System.nanoTime();
+
+        return after - before;
     }
 }

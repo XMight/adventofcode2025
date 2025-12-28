@@ -1,9 +1,15 @@
 package com.abusmac.advent2025;
 
+import com.abusmac.io.InputOutputUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 
 class Day2Test {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Day2Test.class);
 
     @Test
     void testDay2ExampleScenario() {
@@ -84,5 +90,25 @@ class Day2Test {
         Long result = day2.call();
 
         Assertions.assertEquals(14432418L, result);
+    }
+
+    @Test
+    void testDay2SingleInputRange9() throws IOException {
+        String fileData = InputOutputUtils.readResourceFileData("day2/day2inputstripped.txt");
+
+        Day2 day2 = new Day2(fileData);
+        Long result = day2.call();
+
+        LOGGER.info("Day2 result: {}", result);
+
+        Assertions.assertEquals(28844599675L, result);
+    }
+
+    @Test
+    void testWithProfiling() throws Exception {
+        String fileData = InputOutputUtils.readResourceFileData("day2/day2inputstripped.txt");
+
+        LOGGER.info("Executing Day2 with string data from test");
+        Day2.runDay2(fileData, 100);
     }
 }
