@@ -2,6 +2,7 @@ package com.abusmac.advent2025;
 
 import com.abusmac.io.InputOutputUtils;
 import com.abusmac.math.MathUtils;
+import com.abusmac.string.StringUtils;
 import com.abusmac.types.Triplet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -138,7 +139,7 @@ public class Day2Part2 implements Callable<Long> {
         String s = String.valueOf(id);
 
         for (int i = len - 1; i >= 1; i--) {
-            List<String> numbers = splitIntoSameLengthNumbers(s, len, i);
+            List<String> numbers = StringUtils.splitIntoSameLengthNumbers(s, len, i);
 
             result = true;
             String current = numbers.get(0);
@@ -154,23 +155,6 @@ public class Day2Part2 implements Callable<Long> {
             if (result) {
                 break;
             }
-        }
-
-        return result;
-    }
-
-    private List<String> splitIntoSameLengthNumbers(String s, int len, int splitLen) {
-        List<String> result = new ArrayList<>();
-
-        char[] charArray = s.toCharArray();
-
-        for (int i = 0; i < len; i += splitLen) {
-            String number = "";
-            for (int k = 0; k < splitLen && k + i < len; k++) {
-                number += charArray[i + k];
-            }
-
-            result.add(number);
         }
 
         return result;
